@@ -13,3 +13,9 @@ Unity/build/
 Unity/Library/
 Unity/Temp/
 Unity/Logs/
+hifisim_ws/lidar_data_202*/
+rosbag/
+*.bag
+*.bag.active
+*.log
+nohup.out
