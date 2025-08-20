@@ -1,0 +1,15 @@
+build/
+install/
+log/
+rosbag/
+*.bag
+*.bag.active
+nohup.out
+*.log
+mono_crash.*.blob
+*.pyc
+__pycache__/
+Unity/build/
+Unity/Library/
+Unity/Temp/
+Unity/Logs/
