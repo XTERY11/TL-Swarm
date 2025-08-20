@@ -1,6 +1,6 @@
 # 阶段1 · 文档第一部分
 
-> 说明：本阶段以**终端命令 + 短名参数**为主，突出 **Unity ↔ HiFiSim ↔ Ego Planner** 的**数据通路**；不依赖任何脚本。
+> 说明：本阶段以**终端命令 + 短名参数**为主，目标是建立起来 **Unity ↔ HiFiSim ↔ Ego Planner** 的**数据交互**；不依赖任何脚本。
 
 ---
 
@@ -159,19 +159,9 @@ ros2 launch ego_planner advanced_param.launch.py \
 
 * **Unity → Ego** 的**位姿/点云通道**已在**多机**下稳定工作；
 * Ego Planner 能稳定订阅 `odom/cloud`；RViz 可稳定显示点云与轨迹基础信息。
-* **阶段1通过**。
 
----
 
-## 8. 后续计划
-
-* **阶段2**：`Signpost → 规划器目标/触发` 的数据对接与验证。
-* **阶段3**：**多机轨迹互避**与冲突解解耦。
-* 阶段 1–3 完成后，整理**全局总览**与**README/数据流图**。
-
----
-
-## 9. 附录：检查清单（复测用）
+## 8. 附录：检查清单（复测用）
 
 * [ ] Unity 侧发布 `sim_nwu_pose` / `lidar01`。
 * [ ] `pose_to_odom_adapter.py` 正常运行，`/drone_i/odom` 有样本。
