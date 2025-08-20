@@ -1,13 +1,14 @@
-### HiFiSim ↔ ROS 2 ↔ Ego-Planner 集成（顶层 README｜第1部分）
+### HiFiSim ↔ ROS 2 ↔ Ego-Planner 集成
 
-> 目标：以“终端最小命令 + 短名参数”跑通阶段1~3（单机），强调数据通路、可视化与可复现。第2部分在本文后半段补充（数据流/话题图、排错、改动索引、上传与复现指南、FAQ）。
+> 目标：跑通单机任务
+> note: 只用了终端最小命令和短名参数没有launch
 
 ---
 
 ### 1. QuickStart（依赖 → 编译 → 阶段1~3一页跑通）
 
 #### 1.1 依赖
-- **ROS 2**: 建议与本机一致的发行版（Ubuntu + `ros2` CLI 已验证）
+- **ROS 2**: 建议与本机一致的发行版（Ubuntu 22.04 + `ros2` humble ）
 - **Python**: 3.10
 - **CMake/colcon**: 工作区构建
 - **RViz2**: 与 ROS 2 发行版匹配
@@ -28,7 +29,7 @@ colcon build
 source install/setup.bash
 ```
 
-#### 1.3 一页跑通（单机，agent001 ↔ drone_0）
+#### 1.3 quicktest（单机，agent001 ↔ drone_0）
 > 全程使用“短名参数”，RViz Fixed Frame 统一为 `world`。
 
 - 终端A：位姿 → 里程计
@@ -90,7 +91,7 @@ nohup python3 /home/ctx/hifisim_ws/tools/controller_adapter_fixed.py \
   >/tmp/ctrl_1.log 2>&1 & echo $!
 ```
 
-- 在线观测（链路唯一性/在流）
+- 监听
 ```bash
 ros2 topic info -v /move_base_simple/goal_raw | cat   # Pub=1(signpost), Sub=1(goal_filter)
 ros2 topic info -v /move_base_simple/goal | cat       # Pub=1(goal_filter), Sub=1(planner)
@@ -99,7 +100,7 @@ ros2 topic hz /drone_0_planning/bspline | head -n 20 | cat
 ros2 topic hz /agent001/trajectory/points | head -n 20 | cat  # ≈20Hz
 ```
 
-- RViz 最小配置
+- RViz2观测配置
   - **Fixed Frame**=`world`
   - 添加 PointCloud2：`/drone_0/cloud`（Reliability=Best Effort）
   - 添加 Odometry：`/drone_0/odom`
@@ -109,7 +110,7 @@ ros2 topic hz /agent001/trajectory/points | head -n 20 | cat  # ≈20Hz
 
 
 
-### 2. 必需文件与子文档（互相引用）
+### 2. 建议阅读文档
 - **阶段文档**：
   - 阶段1：`repo/phase_design/ex1.md`
   - 阶段2：`repo/phase_design/ex2.md`
@@ -154,7 +155,7 @@ ros2 topic hz /agent001/trajectory/points | head -n 20 | cat  # ≈20Hz
 
 ---
 
-### 5. 排错清单（最常见 → 最快速修复）
+### 5. 推荐排错清单
 - **有计数但点云不可见/占据为0**
   - 检查 `/drone_0/cloud`：`header.frame_id=world`、`fields` 含 `x,y,z`、`width*height>0`；RViz Reliability=Best Effort、Fixed Frame=`world`
   - 需要时在 `cloud_relay.py` 加 `--pose /agent001/global/sim_nwu_pose`
@@ -191,30 +192,4 @@ ros2 topic hz /agent001/trajectory/points | head -n 20 | cat  # ≈20Hz
 - **未改内核声明**
   - Ego-Planner 核心包未修改；Unity 内核未修改（只通过话题交互）
 
----
 
-### 7. 上传与复现实操指南
-- **上传（需要）**：
-  - 源码与文档：`src/`（含上述改动）、`tools/`、`pose_to_odom_adapter.py`、`cloud_relay.py`、`rviz/`、`repo/phase_design/`、本 `README.md`
-- **不要上传**：
-  - `build/`、`install/`、`log/`、`rosbag/`、Unity 二进制/Library/缓存、大日志/图片
-- **Unity 获取**：
-  - A) 提供我们构建的 Unity 下载链接与校验（推荐单独文档）；或
-  - B) 使用者自备 Unity 场景，需保证上述输出话题与 JSON 路径
-- **复现步骤**：
-  - 克隆→`rosdep`→`colcon build`→`source`→按“1.3 一页跑通”依序执行；RViz Fixed Frame=`world`
-  - 详细步骤与解释：见 `repo/phase_design/ex1.md`、`ex2.md`、`ex3.md`
-
----
-
-### 8. FAQ（摘选）
-- Q: 必须上传 Unity 吗？
-  - A: 不需要。未改 Unity 内核；用户可自带或使用我们提供的二进制。
-- Q: Planner 为什么订不到 odom/cloud？
-  - A: 启动务必用短名参数；不要用 `--ros-args -r`。命名空间下将自动解析为 `/drone_0/…`。
-- Q: RViz 有计数但看不到点？
-  - A: 检查点云 `frame_id=world`、`x/y/z` 字段与 `width*height>0`，并把 RViz Fixed Frame 设成 `world`。
-- Q: 多机怎么做？
-  - A: 当前文档覆盖单机；多机复用相同桥接/命名模式，后续扩展。
-
----
