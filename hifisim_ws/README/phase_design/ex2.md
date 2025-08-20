@@ -27,16 +27,8 @@
 
 ---
 
-## 3. 环境与版本
 
-* OS：Linux；工作区：`/home/ctx/hifisim_ws`；分支：`main`
-* ROS 2：已配置可运行 `ros2` CLI（发行版以本机为准）
-* Unity/HiFiSim：提供 `/agent001/global/sim_nwu_pose` 与 `/agent001/lidar01`
-* 提交范围：`main: f79678a..HEAD`（阶段2改动大多为工作区未提交变更）
-
----
-
-## 4. 改动清单
+## 3. 改动清单
 
 * **适配层**
 
@@ -55,7 +47,7 @@
 
 ---
 
-## 5. 复现测试
+## 4. 复现测试
 
 **终端 A：位姿 → 里程计**
 
@@ -90,7 +82,7 @@ ros2 topic pub -1 /move_base_simple/goal geometry_msgs/msg/PoseStamped \
 "{header: {frame_id: world}, pose: {position: {x: 10.0, y: 5.0, z: 2.5}, orientation: {w: 1.0}}}"
 ```
 
-**在线核对**
+**监听**
 
 ```bash
 ros2 topic info -v /move_base_simple/goal | cat
@@ -98,14 +90,9 @@ ros2 topic info -v /drone_0_planning/bspline | cat
 ros2 topic hz /drone_0_planning/bspline | head -n 20 | cat
 ```
 
-**RViz 最小设置**
 
-* Fixed Frame=`world`
-* 显示 `/drone_0/cloud`（Reliability=Best Effort）、`/drone_0/odom`、`/drone_0_planning/bspline`
 
----
-
-## 6. 调试记录
+## 5. 调试记录
 
 * **目标未生效/报参错**
   Observation：使用 `--ros-args -r` 报 “unrecognized arguments” 或 planner 未收到目标
@@ -130,7 +117,7 @@ ros2 topic hz /drone_0_planning/bspline | head -n 20 | cat
 
 ---
 
-## 7. 验收标准
+## 6. 验收标准
 
 * 目标发布后 **t ≤ 2 s** 出现首个 `/drone_0_planning/bspline` 包
 * `/drone_0_planning/bspline` **频率 ≥ 5 Hz**（连续 ≥ 5 s）
@@ -138,7 +125,7 @@ ros2 topic hz /drone_0_planning/bspline | head -n 20 | cat
 
 ---
 
-## 8. 已知问题
+## 7. 已知问题
 
 * 仓库内部分工具默认 `frame_id=map`，与本阶段 `world` 设定不一致（阶段2不启用以避免混淆）。
 * 个别环境点云 QoS 默认非 SensorData，可能导致初期不同步；建议在节点端显式设为 SensorData。
@@ -146,12 +133,7 @@ ros2 topic hz /drone_0_planning/bspline | head -n 20 | cat
 
 ---
 
-## 9. 后续计划（进入阶段3的触发条件）
 
-* 触发条件：按本节“最小可复现实验”稳定满足**验收标准**。
-* 阶段3工作项（概述）：占据/膨胀地图可视化与调参；目标过滤与偏移（如需）；在单机上完成避障闭环观测，再扩展到多机互避。
-
----
 
 ### 附录｜提交与文件索引
 
