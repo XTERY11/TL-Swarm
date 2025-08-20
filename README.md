@@ -2,6 +2,7 @@
 
 > 目标：跑通单机任务
 > note: 只用了终端最小命令和短名参数没有launch
+> 建议先阅读hifisim_ws的readme，ex1,ex2,ex3,
 
 ---
 
