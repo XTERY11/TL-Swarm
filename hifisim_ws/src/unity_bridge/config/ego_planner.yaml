@@ -1,0 +1,57 @@
+/ego_planner_node:
+  ros__parameters:
+    grid_map:
+      resolution: 0.1
+      map_size_x: 40.0
+      map_size_y: 40.0
+      map_size_z: 5.0
+      local_update_range_x: 5.5
+      local_update_range_y: 5.5
+      local_update_range_z: 4.5
+      obstacles_inflation: 0.3
+      local_map_margin: 30
+      ground_height: -1.0
+      odom_depth_timeout: 1.0
+      fx: 387.229
+      fy: 387.229
+      cx: 321.044
+      cy: 243.447
+      use_depth_filter: true
+      depth_filter_tolerance: 0.15
+      depth_filter_maxdist: 5.0
+      depth_filter_mindist: 0.2
+      depth_filter_margin: 2
+      k_depth_scaling_factor: 1000.0
+      skip_pixel: 2
+      p_hit: 0.70
+      p_miss: 0.35
+      p_min: 0.12
+      p_max: 0.97
+      p_occ: 0.80
+      min_ray_length: 0.5
+      max_ray_length: 4.5
+      visualization_truncate_height: 2.0
+      virtual_ceil_height: 2.0
+      virtual_ceil_yp: 10.0
+      virtual_ceil_yn: -10.0
+      show_occ_time: false
+      pose_type: 1
+      frame_id: "world"
+    manager:
+      max_vel: 0.3
+      max_acc: 0.5
+      max_jerk: 0.5
+      feasibility_tolerance: 0.2
+      planning_horizon: 1.0
+      control_points_distance: 0.5
+      use_distinctive_trajs: false
+      drone_id: 0
+    fsm:
+      flight_type: 1  # MANUAL_TARGET = 1
+      thresh_replan_time: 2.0
+      thresh_no_replan_meter: 1.0
+      planning_horizen_time: 3.0
+      emergency_time: 1.0
+      realworld_experiment: false
+      fail_safe: true
+      waypoint_num: 0 

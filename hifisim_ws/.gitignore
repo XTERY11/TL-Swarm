@@ -1,0 +1,35 @@
+# 通用忽略文件
+.DS_Store
+*.log
+*.tmp
+*.swp
+*.swo
+*~
+
+# 构建文件
+build/
+install/
+log/
+*.o
+*.so
+*.a
+
+# IDE文件
+.vscode/
+.idea/
+*.sublime-*
+
+# 临时文件
+temp/
+tmp/
+cache/
+
+# 大文件
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# 系统文件
+Thumbs.db
+desktop.ini

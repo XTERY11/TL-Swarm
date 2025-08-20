@@ -1,0 +1,43 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+  - Class: rviz_common/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/TF
+      Enabled: true
+      Name: TF
+      Show Axes: true
+      Show Arrows: true
+    - Class: rviz_default_plugins/PointCloud2
+      Enabled: true
+      Name: RawCloud
+      Topic: /drone_0_cloud
+      Queue Size: 10
+      Style: Flat Squares
+      Size (Pixels): 2
+      Color Transformer: Intensity
+    - Class: rviz_default_plugins/PointCloud2
+      Enabled: true
+      Name: OccupancyInflate
+      Topic: /drone_0_grid/grid_map/occupancy_inflate
+      Queue Size: 10
+      Style: Squares
+      Size (Pixels): 2
+      Color Transformer: RGB8
+  Global Options:
+    Background Color: 48; 48; 48
+    Fixed Frame: world
+  Name: root
+  Tools:
+    - Class: rviz_default_plugins/Interact
+    - Class: rviz_default_plugins/Measure
+    - Class: rviz_default_plugins/PublishPoint
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Distance: 30
+      Pitch: 0.7
+      Yaw: 0.8 
