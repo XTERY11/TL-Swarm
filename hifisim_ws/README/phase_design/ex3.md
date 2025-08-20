@@ -7,7 +7,7 @@
 - 在阶段2已完成“目标输入链路（/move_base_simple/goal → bspline）”的稳定验证后，开始引入“目标过滤/偏移 + 控制桥 + 起飞控制（pbtm）”，并强调观察占据栅格（inflate）与点云。
 
 #### 系统与数据通路
-- 数据链路（自上而下）
+- 数据链路
   - TestCase Signpost（JSON）→ `tools/signpost_mission_runner.py` 生成路点目标（`PoseStamped`）→ 目标过滤偏移 `tools/goal_filter_offset.py`（`/move_base_simple/goal_raw` → `/move_base_simple/goal`）
   - Ego-Planner：订阅 `goal`、`/drone_0/odom`、`/drone_0/cloud` → 输出 `/drone_0_planning/bspline`
   - 控制桥 `tools/controller_adapter_fixed.py`：订阅 `bspline` → 发布 `/agent001/trajectory/points` 给 pbtm 控制节点 → Unity 驱动
@@ -140,13 +140,17 @@ ros2 topic hz /agent001/trajectory/points | head -n 20 | cat  # 约 20Hz
   - Change：`goal_filter_offset.py` 增大 `--backoff`，设 `--min_interval` 去抖；`--z_min/z_max` 合法化高度
   - Result：轨迹更稳定，绕障余量更好
 
-#### 验收标准
+#### 测试标准
 - 目标序列发布后 `t ≤ 2 s` 内出现首个 `/drone_0_planning/bspline` 包
 - `/drone_0_planning/bspline` 持续输出（≥ 5 Hz），`/agent001/trajectory/points` 稳定 ≈ 20 Hz
 - RViz 可见占据膨胀与轨迹；路径不穿越明显障碍，Unity 中机体按轨迹行进
 
-#### 已知问题/风险
+#### 已知问题
 - `goal_filter_offset.py` 的 `--odom` 默认值为 `/drone_0_odom`（下划线），需显式传入 `/drone_0/odom`
 - 场景差异较大时需适配 `resolution_`、`obstacles_inflation_`、`local_update_range_*`；否则易出现“地图空/过稀/过密”
 - `signpost_mission_runner.py` 的坐标系转换以当前 Env1 假设为准，切换场景需复核（已通过参数 `--filter/--limit` 控制样本）
+- 8.19总结 无人机会停留在第一个signpost距离2m处，目前bug在于，路点的设置不合理，signpost作为附着在建筑物墙壁上的点，不可以作为waypoint，需要另外设计路点，egoplanner输入一个落点在障碍物的目标点会kill，直接撞击自杀。目前的想法是：
+- 1, 对于不同的signpost反馈不同的signal 指引规划器的采样点如何围绕着signpost分布。
+- 2, 根据地图微调路点，（人工设置多个离散点，当然可以确保避障以及集群）
+- 3，对于集群，swarm是逐个起飞的模式，每个无人机建立在上一架uav起飞的基础上，触发trigger，维护自己的栅格地图，当数量扩大到10时，不一定稳。如果后续数量增大到100,需要调整集群逻辑。
 
